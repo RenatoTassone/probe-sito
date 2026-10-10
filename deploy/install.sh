@@ -27,7 +27,7 @@ rollback() {
 }
 [ ! -e "$base/current" ] || [ -L "$base/current" ] || { echo "current non e un collegamento: interruzione."; exit 1; }
 ln -sfn "$release" "$base/current"
-install -m 644 "$src/deploy/probe-sito.conf" "$cfg"
+if [ ! -e "$cfg" ]; then install -m 644 "$src/deploy/probe-sito.conf" "$cfg"; fi
 ln -sfn "$cfg" "$enabled"
 if ! nginx -t; then rollback; exit 1; fi
 if ! systemctl reload nginx; then rollback; nginx -t && systemctl reload nginx; exit 1; fi
